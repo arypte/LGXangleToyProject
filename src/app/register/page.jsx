@@ -20,6 +20,8 @@ const Register = () => {
 
   let t_signer;
 
+  const [result, setResult] = useState(0);
+
   const [imageFile, setImageFile] = useState();
   const [skey, setSkey] = useState();
 
@@ -27,11 +29,25 @@ const Register = () => {
   const [builder, setBuilder] = useState();
   const [hash, setHash] = useState();
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const [inputValue, setInputValue] = useState(''); // 입력값을 저장할 상태
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value); // 입력값이 변경될 때마다 상태 업데이트
+  };
+
+  const handleClick = async () => {
+    const n = parseInt(inputValue, 10); // 문자열을 숫자로 변환
+    if (!isNaN(n)) {
+      // n이 유효한 숫자인 경우에만 함수 호출
+      const bool = await c_a2.methods.check_hash(hash, n).call();
+      if (bool == true) setResult(1);
+      else setResult(2);
+    }
+  };
+
   const connect = async () => {
-    console.log('t_signer : ', signer);
-    // console.log('paymaster : ', process.env.NEXT_PUBLIC_PAYMASTER_URL);
-    // console.log('rpcUrl : ', rpcUrl);
-    // console.log('provier : ', provider);
     const paymasterMiddleware = Presets.Middleware.verifyingPaymaster(
       process.env.NEXT_PUBLIC_PAYMASTER_URL,
       {
@@ -64,13 +80,13 @@ const Register = () => {
       // Send the user operation
       const client = await Client.init(rpcUrl);
       const res = await client.sendUserOperation(builder, {
-        onBuild: (op) => console.log('int~'),
+        onBuild: (op) => console.log('ing~'),
       });
 
       console.log('Waiting for transaction...');
       const ev = await res.wait();
       console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
-
+      const count = await c_a2.methods.get_count().call();
       setPrint(Number(count));
     } catch (error) {
       console.log(error);
@@ -79,6 +95,7 @@ const Register = () => {
 
   const del = () => {
     setImageFile();
+    setResult(0);
   };
 
   const onChangeImageFile = (e) => {
@@ -100,6 +117,8 @@ const Register = () => {
         setImageFile(file);
       }
     };
+
+    setSelectedImage(URL.createObjectURL(file));
   };
 
   useEffect(() => {
@@ -138,6 +157,9 @@ const Register = () => {
         </form>
       ) : (
         <div className="flex flex-col">
+          {selectedImage && (
+            <img className src={selectedImage} alt="Uploaded" />
+          )}
           <div>
             <button
               className='className="px-8 py-2 border rounded-xl bg-red-200'
@@ -147,12 +169,17 @@ const Register = () => {
             </button>
             {print != 0 ? <div>{print}</div> : <></>}
           </div>
-          <button
-            className='className="px-8 py-2 border rounded-xl bg-red-200'
-            onClick={del}
-          >
-            원본 검증
-          </button>
+          <div>
+            <input type="text" value={inputValue} onChange={handleChange} />
+            <button
+              className="px-8 py-2 border rounded-xl bg-red-200"
+              onClick={handleClick}
+            >
+              원본 검증
+            </button>
+            {result != 0 &&
+              (result === 1 ? <div>원본임</div> : <div>원본아님</div>)}
+          </div>
           <button
             className='className="px-8 py-2 border rounded-xl bg-red-200'
             onClick={del}
