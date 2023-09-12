@@ -64,16 +64,14 @@ const Register = () => {
       // Send the user operation
       const client = await Client.init(rpcUrl);
       const res = await client.sendUserOperation(builder, {
-        onBuild: (op) => console.log('Signed UserOperation :', op),
+        onBuild: (op) => console.log('int~'),
       });
-      console.log(`UserOPHash: ${res.userOpHash}`);
+
       console.log('Waiting for transaction...');
       const ev = await res.wait();
-      console.log(ev);
       console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
-      const count = await c_a2.methods.get_count().call();
+
       setPrint(Number(count));
-      console.log('count : ', count);
     } catch (error) {
       console.log(error);
     }
