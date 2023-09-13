@@ -6,7 +6,7 @@ import { Presets, Client } from 'userop';
 import { AppContext } from '../layout';
 import c_abi from '../c_abi.json';
 
-const c_add = '0x588d98511bd106ab87011c54e50376c1c8f81613';
+const c_add = '0x525C1af37185CC58c68D5a57dC38eA7900c378e3';
 
 const Register = () => {
   const { account, setAccount, web3 } = useContext(AppContext);
@@ -21,7 +21,6 @@ const Register = () => {
   let t_signer;
 
   const [result, setResult] = useState(0);
-
   const [imageFile, setImageFile] = useState();
   const [skey, setSkey] = useState();
 
@@ -31,20 +30,13 @@ const Register = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const [inputValue, setInputValue] = useState(''); // 입력값을 저장할 상태
-
-  const handleChange = (e) => {
-    setInputValue(e.target.value); // 입력값이 변경될 때마다 상태 업데이트
-  };
-
-  const handleClick = async () => {
-    const n = parseInt(inputValue, 10); // 문자열을 숫자로 변환
-    if (!isNaN(n)) {
-      // n이 유효한 숫자인 경우에만 함수 호출
-      const bool = await c_a2.methods.check_hash(hash, n).call();
-      if (bool == true) setResult(1);
-      else setResult(2);
-    }
+  const downloadImage = (dataUrl, filename) => {
+    const anchor = document.createElement('a');
+    anchor.href = dataUrl;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   };
 
   const connect = async () => {
@@ -88,6 +80,7 @@ const Register = () => {
       console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
       const count = await c_a2.methods.get_count().call();
       setPrint(Number(count));
+      downloadImage(selectedImage, 'modified_image.png');
     } catch (error) {
       console.log(error);
     }
@@ -98,7 +91,7 @@ const Register = () => {
     setResult(0);
   };
 
-  const onChangeImageFile = (e) => {
+  const onChangeImageFile = async (e) => {
     if (!e.target.files) return;
 
     const crypto = require('crypto');
@@ -112,13 +105,51 @@ const Register = () => {
         const fileData = event.target.result;
         const fileBuffer = Buffer.from(fileData);
         const ab = crypto.createHash('sha512').update(fileBuffer).digest('hex');
-        console.log('hash : ', ab);
-        setHash(ab);
+        console.log('Original hash : ', ab);
         setImageFile(file);
+
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = async () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          ctx.drawImage(img, 0, 0);
+
+          const imageData = ctx.getImageData(0, 0, 1, 1);
+          const data = imageData.data;
+          let count = await c_a2.methods.get_count().call();
+          count = Number(count) + 1;
+
+          const R_price = parseInt(count / (256 * 256));
+          const G_price = parseInt((count % (256 * 256)) / 256);
+          const B_price = count % 256;
+
+          // console.log(R_price, G_price, B_price);
+
+          data[0] = R_price; // R 채널
+          data[1] = G_price; // G 채널
+          data[2] = B_price; // B 채널
+
+          ctx.putImageData(imageData, 0, 0);
+
+          const modifiedImageDataUrl = canvas.toDataURL('image/png');
+
+          const modifiedFileBuffer = Buffer.from(modifiedImageDataUrl);
+          const modifiedHash = crypto
+            .createHash('sha512')
+            .update(modifiedFileBuffer)
+            .digest('hex');
+          console.log('Modified hash : ', modifiedHash);
+
+          setSelectedImage(modifiedImageDataUrl);
+          setHash(modifiedHash);
+        };
       }
     };
-
-    setSelectedImage(URL.createObjectURL(file));
   };
 
   useEffect(() => {
@@ -157,31 +188,18 @@ const Register = () => {
         </form>
       ) : (
         <div className="flex flex-col">
-          {selectedImage && (
-            <img className src={selectedImage} alt="Uploaded" />
-          )}
+          {selectedImage && <img src={selectedImage} alt="Uploaded" />}
           <div>
             <button
-              className='className="px-8 py-2 border rounded-xl bg-red-200'
+              className="px-8 py-2 border rounded-xl bg-red-200"
               onClick={register}
             >
               원본 등록
             </button>
             {print != 0 ? <div>{print}</div> : <></>}
           </div>
-          <div>
-            <input type="text" value={inputValue} onChange={handleChange} />
-            <button
-              className="px-8 py-2 border rounded-xl bg-red-200"
-              onClick={handleClick}
-            >
-              원본 검증
-            </button>
-            {result != 0 &&
-              (result === 1 ? <div>원본임</div> : <div>원본아님</div>)}
-          </div>
           <button
-            className='className="px-8 py-2 border rounded-xl bg-red-200'
+            className="px-8 py-2 border rounded-xl bg-red-200"
             onClick={del}
           >
             이미지 제거

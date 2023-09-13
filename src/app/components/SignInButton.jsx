@@ -4,7 +4,6 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
 import React, { useContext, useEffect } from 'react';
 import { AppContext } from '../layout';
-
 import { useRouter } from 'next/navigation';
 
 import axios from 'axios';
@@ -43,6 +42,11 @@ function SignInButton() {
     router.push('/register');
   };
 
+  const go_Check = () => {
+    make_user(session.user);
+    router.push('/check');
+  };
+
   if (session && session.user) {
     // console.log(session.user.id);
 
@@ -59,7 +63,13 @@ function SignInButton() {
           className="px-8 py-2 border rounded-xl bg-red-200"
           onClick={go_Register}
         >
-          등록/확인
+          원본 등록
+        </button>
+        <button
+          className="px-8 py-2 border rounded-xl bg-red-200"
+          onClick={go_Check}
+        >
+          원본 검증
         </button>
       </div>
     );
