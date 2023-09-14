@@ -1,12 +1,12 @@
 //app/components/SignInButton.tsx
 
-'use client';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import React, { useContext, useEffect } from 'react';
-import { AppContext } from '../layout';
-import { useRouter } from 'next/navigation';
-
-import axios from 'axios';
+"use client";
+import { signIn, signOut, useSession } from "next-auth/react";
+import React, { useContext, useEffect } from "react";
+import { AppContext } from "../layout";
+import { useRouter } from "next/navigation";
+import styled from "styled-components";
+import axios from "axios";
 
 function SignInButton() {
   const { data: session } = useSession();
@@ -22,8 +22,8 @@ function SignInButton() {
         {
           auth: suser.id,
           pvk: newAccount.privateKey,
-          nickname: 'test',
-          login_type: 'test',
+          nickname: "test",
+          login_type: "test",
         }
       );
 
@@ -39,50 +39,86 @@ function SignInButton() {
 
   const go_Register = () => {
     make_user(session.user);
-    router.push('/register');
+    router.push("/register");
   };
 
   const go_Check = () => {
     make_user(session.user);
-    router.push('/check');
+    router.push("/check");
   };
 
   if (session && session.user) {
     // console.log(session.user.id);
 
     return (
-      <div className="flex flex-col">
-        <button
-          className="px-12 py-4 border rounded-xl bg-red-300"
+      <div className="flex flex-col" style={{ marginTop: "20px" }}>
+        <BlackShortButton
           onClick={() => signOut()}
+          style={{ marginBottom: "10px" }}
         >
           {session.user.name}님 Log Out
-        </button>
+        </BlackShortButton>
 
-        <button
-          className="px-8 py-2 border rounded-xl bg-red-200"
+        <BlackShortButton
           onClick={go_Register}
+          style={{ marginBottom: "10px" }}
         >
           원본 등록
-        </button>
-        <button
+        </BlackShortButton>
+        <BlackShortButton
           className="px-8 py-2 border rounded-xl bg-red-200"
           onClick={go_Check}
         >
           원본 검증
-        </button>
+        </BlackShortButton>
       </div>
     );
+    // router.push("/register");
   }
 
   return (
-    <button
-      className="px-12 py-4 border rounded-xl bg-yellow-300"
-      onClick={() => signIn()}
+    <LoginButton
+      style={{ marginTop: "50px" }}
+      onClick={async () => {
+        await signIn();
+        router.push("/register");
+      }}
     >
-      LogIn
-    </button>
+      Social LogIn
+    </LoginButton>
   );
 }
 
 export default SignInButton;
+
+const LoginButton = styled.div`
+  width: 300px;
+  height: 60px;
+  border-radius: 10px;
+  background-color: white;
+  color: #121212;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const BlackShortButton = styled.div`
+  width: 300px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: white;
+  color: #121212;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: 20px;
+  font-weight: 500;
+`;

@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useContext } from 'react';
-import { ethers } from 'ethers';
-import { Presets, Client } from 'userop';
-import { AppContext } from '../layout';
-import c_abi from '../c_abi.json';
+import React, { useState, useEffect, useContext } from "react";
+import { ethers } from "ethers";
+import { Presets, Client } from "userop";
+import { AppContext } from "../layout";
+import c_abi from "../c_abi.json";
+import TopNavigationBar from "../components/TopNavigationBar";
 
-const c_add = '0x525C1af37185CC58c68D5a57dC38eA7900c378e3';
+const c_add = "0x525C1af37185CC58c68D5a57dC38eA7900c378e3";
 
 const Register = () => {
   const { account, setAccount, web3 } = useContext(AppContext);
@@ -31,7 +32,7 @@ const Register = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const downloadImage = (dataUrl, filename) => {
-    const anchor = document.createElement('a');
+    const anchor = document.createElement("a");
     anchor.href = dataUrl;
     anchor.download = filename;
     document.body.appendChild(anchor);
@@ -43,7 +44,7 @@ const Register = () => {
     const paymasterMiddleware = Presets.Middleware.verifyingPaymaster(
       process.env.NEXT_PUBLIC_PAYMASTER_URL,
       {
-        type: 'payg',
+        type: "payg",
       }
     );
 
@@ -60,27 +61,27 @@ const Register = () => {
       const register = {
         to: c_add,
         value: ethers.constants.Zero,
-        data: c_a.interface.encodeFunctionData('set_hash', [hash]), // 여기 들어감
+        data: c_a.interface.encodeFunctionData("set_hash", [hash]), // 여기 들어감
       };
 
-      console.log('set tx');
+      console.log("set tx");
 
       builder.executeBatch([register]);
 
-      console.log('set builder');
+      console.log("set builder");
 
       // Send the user operation
       const client = await Client.init(rpcUrl);
       const res = await client.sendUserOperation(builder, {
-        onBuild: (op) => console.log('ing~'),
+        onBuild: (op) => console.log("ing~"),
       });
 
-      console.log('Waiting for transaction...');
+      console.log("Waiting for transaction...");
       const ev = await res.wait();
       console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
       const count = await c_a2.methods.get_count().call();
       setPrint(Number(count));
-      downloadImage(selectedImage, 'modified_image.png');
+      downloadImage(selectedImage, "modified_image.png");
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +95,7 @@ const Register = () => {
   const onChangeImageFile = async (e) => {
     if (!e.target.files) return;
 
-    const crypto = require('crypto');
+    const crypto = require("crypto");
     const file = e.target.files[0];
 
     const reader = new FileReader();
@@ -104,16 +105,16 @@ const Register = () => {
       if (event.target && event.target.result) {
         const fileData = event.target.result;
         const fileBuffer = Buffer.from(fileData);
-        const ab = crypto.createHash('sha512').update(fileBuffer).digest('hex');
-        console.log('Original hash : ', ab);
+        const ab = crypto.createHash("sha512").update(fileBuffer).digest("hex");
+        console.log("Original hash : ", ab);
         setImageFile(file);
 
         const img = new Image();
         img.src = event.target.result;
 
         img.onload = async () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
           canvas.width = img.width;
           canvas.height = img.height;
 
@@ -136,14 +137,14 @@ const Register = () => {
 
           ctx.putImageData(imageData, 0, 0);
 
-          const modifiedImageDataUrl = canvas.toDataURL('image/png');
+          const modifiedImageDataUrl = canvas.toDataURL("image/png");
 
           const modifiedFileBuffer = Buffer.from(modifiedImageDataUrl);
           const modifiedHash = crypto
-            .createHash('sha512')
+            .createHash("sha512")
             .update(modifiedFileBuffer)
-            .digest('hex');
-          console.log('Modified hash : ', modifiedHash);
+            .digest("hex");
+          console.log("Modified hash : ", modifiedHash);
 
           setSelectedImage(modifiedImageDataUrl);
           setHash(modifiedHash);
@@ -165,48 +166,51 @@ const Register = () => {
     if (signer) {
       //   console.log('signer : ', signer);
       connect();
-      console.log('ready');
+      console.log("ready");
     }
   }, [signer]);
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      {!imageFile ? (
-        <form className="flex flex-col">
-          <label
-            className="px-8 py-2 border rounded-xl bg-red-200"
-            htmlFor="imageFile"
-          >
-            {imageFile ? imageFile.name : 'Choose image'}
-          </label>
-          <input
-            className="hidden"
-            id="imageFile"
-            type="file"
-            onChange={onChangeImageFile}
-          />
-        </form>
-      ) : (
-        <div className="flex flex-col">
-          {selectedImage && <img src={selectedImage} alt="Uploaded" />}
-          <div>
+    <>
+      <TopNavigationBar />
+      <div className="flex justify-center items-center h-screen">
+        {!imageFile ? (
+          <form className="flex flex-col">
+            <label
+              className="px-8 py-2 border rounded-xl bg-red-200"
+              htmlFor="imageFile"
+            >
+              {imageFile ? imageFile.name : "Choose image"}
+            </label>
+            <input
+              className="hidden"
+              id="imageFile"
+              type="file"
+              onChange={onChangeImageFile}
+            />
+          </form>
+        ) : (
+          <div className="flex flex-col">
+            {selectedImage && <img src={selectedImage} alt="Uploaded" />}
+            <div>
+              <button
+                className="px-8 py-2 border rounded-xl bg-red-200"
+                onClick={register}
+              >
+                원본 등록
+              </button>
+              {print != 0 ? <div>{print}</div> : <></>}
+            </div>
             <button
               className="px-8 py-2 border rounded-xl bg-red-200"
-              onClick={register}
+              onClick={del}
             >
-              원본 등록
+              이미지 제거
             </button>
-            {print != 0 ? <div>{print}</div> : <></>}
           </div>
-          <button
-            className="px-8 py-2 border rounded-xl bg-red-200"
-            onClick={del}
-          >
-            이미지 제거
-          </button>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 export default Register;
