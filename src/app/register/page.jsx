@@ -39,13 +39,33 @@ const Register = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const downloadImage = (dataUrl, filename) => {
+  // const downloadImage = (dataUrl, filename) => {
+  //   const anchor = document.createElement("a");
+  //   anchor.href = dataUrl;
+  //   anchor.download = filename;
+  //   document.body.appendChild(anchor);
+  //   anchor.click();
+  //   document.body.removeChild(anchor);
+  // };
+  const downloadImage = async (dataUrl, filename) => {
     const anchor = document.createElement("a");
     anchor.href = dataUrl;
     anchor.download = filename;
+    anchor.style.display = "none"; // anchor를 DOM에 보이지 않게 설정
     document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+
+    // 다운로드를 위한 클릭 이벤트를 프로그래밍적으로 발생
+    const clickEvent = new MouseEvent("click", {
+      view: window,
+      bubbles: true,
+      cancelable: false,
+    });
+    anchor.dispatchEvent(clickEvent);
+
+    // anchor 요소 제거
+    setTimeout(() => {
+      document.body.removeChild(anchor);
+    }, 0);
   };
 
   const connect = async () => {
@@ -209,6 +229,7 @@ const Register = () => {
               type="file"
               onChange={onChangeImageFile}
               style={{ display: "none" }}
+              capture="camera"
             />
           </StyledUploadImageButton>
         ) : registerStep === 2 ? (
