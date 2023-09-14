@@ -4,15 +4,19 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { registerStepState } from "../states";
 import { useRecoilState } from "recoil";
-
-const TopNavigationBar = () => {
+const TopNavigationBar = (router) => {
   const [registerStep, setRegisterStep] = useRecoilState(registerStepState);
+  console.log(router.pathname);
   return (
     <>
       <Container>
-        <NavigationItem selected={registerStep == 1}>등록하기</NavigationItem>
-        <NavigationItem selected={registerStep == 2}>검증하기</NavigationItem>
-        <NavigationItem selected={registerStep == 3}>히스토리</NavigationItem>
+        <NavigationItem selected={router.pathname == "/register"}>
+          등록하기
+        </NavigationItem>
+        <NavigationItem selected={router.pathname == "/check"}>
+          검증하기
+        </NavigationItem>
+        <NavigationItem selected={false}>히스토리</NavigationItem>
       </Container>
       <StatusLine>
         <StatusCircle selected={registerStep == 1}></StatusCircle>

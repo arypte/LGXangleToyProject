@@ -10,6 +10,8 @@ import styled from "styled-components";
 import { useRef } from "react";
 import { useRecoilState } from "recoil";
 import { registerStepState } from "../states";
+import { useRouter } from "next/navigation";
+import { TopNavigationBarPlaceholder } from "../placeholder";
 
 const c_add = "0x525C1af37185CC58c68D5a57dC38eA7900c378e3";
 
@@ -22,6 +24,7 @@ const Register = () => {
   );
   const c_a = new ethers.Contract(c_add, c_abi, provider);
   const c_a2 = new web3.eth.Contract(c_abi, c_add);
+  const router = useRouter();
 
   let t_signer;
 
@@ -68,6 +71,7 @@ const Register = () => {
         value: ethers.constants.Zero,
         data: c_a.interface.encodeFunctionData("set_hash", [hash]), // 여기 들어감
       };
+      setRegisterStep(3);
 
       console.log("set tx");
 
@@ -185,10 +189,17 @@ const Register = () => {
     }
   }, [signer]);
 
+  useEffect(() => {
+    setRegisterStep(1);
+    console.log("처음 레지스터");
+  }, []);
+
   return (
     <>
-      <TopNavigationBar />
-      <div className="flex justify-center items-center h-screen">
+      <TopNavigationBar router={router} />
+      <TopNavigationBarPlaceholder />
+      {registerStep === 2 && <Title>이 사진을 등록할까요?</Title>}
+      <div className="flex justify-center items-center  h-screen">
         {!imageFile ? (
           <StyledUploadImageButton onClick={handleClick}>
             <img src="/register/LGcamera.svg" alt="camera" />
@@ -200,7 +211,7 @@ const Register = () => {
               style={{ display: "none" }}
             />
           </StyledUploadImageButton>
-        ) : (
+        ) : registerStep === 2 ? (
           <div
             className="flex flex-col"
             style={{
@@ -229,9 +240,45 @@ const Register = () => {
               }}
             >
               <RemoveButton onClick={register}>원본 등록</RemoveButton>
-              {print != 0 ? <div>{print}</div> : <></>}
+              {print !== 0 ? <div>{print}</div> : null}
               <RegisterButton onClick={del}>이미지 제거</RegisterButton>
             </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src="/register/blueCheck.svg"
+              alt="complete"
+              width={125}
+              s
+              style={{ marginTop: "-50px" }}
+            />
+            <Title style={{ fontSize: 34 }}>업로드를 완료했어요.</Title>
+            <div
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                color: "white",
+                fontWeight: 400,
+                marginTop: "10px",
+              }}
+            >
+              업로드한 사진은 히스토리 탭에서 <br />
+              확인할 수 있어요.
+            </div>
+            <CompleteButton
+              onClick={() => {
+                router.push("/");
+              }}
+            >
+              확인
+            </CompleteButton>
           </div>
         )}
       </div>
@@ -291,4 +338,29 @@ const RegisterButton = styled.button`
 
   font-size: 20px;
   font-weight: 400;
+`;
+
+const Title = styled.div`
+  font-size: 28px;
+  margin-top: 30px;
+  color: white;
+
+  text-align: center;
+`;
+
+const CompleteButton = styled.button`
+  width: 148px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: #2b9bda;
+  color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: 20px;
+  font-weight: 400;
+  margin-top: 50px;
 `;
