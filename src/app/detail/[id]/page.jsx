@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'next/navigation';
-import { AppContext } from '../layout';
 import axios from 'axios';
+import { AppContext } from '../../layout';
 
 const History = () => {
   const { account, setAccount, web3 } = useContext(AppContext);
@@ -12,15 +12,12 @@ const History = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
 
-  useEffect(() => {
-    get_history_data;
-  }, []);
-
   const get_history_data = async () => {
     try {
       setIsLoading(true);
+      console.log('loading', id);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/history?hid=${id}`
+        `${process.env.NEXT_PUBLIC_BACK_URL}/api/history?hid=${id}`
       );
 
       setData(response.data);
@@ -30,6 +27,10 @@ const History = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    get_history_data();
+  }, []);
 
   return (
     <>
