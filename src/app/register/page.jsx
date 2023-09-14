@@ -91,7 +91,6 @@ const Register = () => {
         value: ethers.constants.Zero,
         data: c_a.interface.encodeFunctionData("set_hash", [hash]), // 여기 들어감
       };
-      setRegisterStep(3);
 
       console.log("set tx");
 
@@ -111,6 +110,7 @@ const Register = () => {
       const count = await c_a2.methods.get_count().call();
       setPrint(Number(count));
       downloadImage(selectedImage, "modified_image.png");
+      setRegisterStep(3);
     } catch (error) {
       console.log(error);
     }

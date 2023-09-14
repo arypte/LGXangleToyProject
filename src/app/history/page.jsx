@@ -35,33 +35,37 @@ const History = () => {
     get_history_data();
   }, []);
 
-  // // return ({isLoading == true ? <div> Loading ~ </div> : <div> 아아 </div>});
+  // return ({isLoading == true ? <div> Loading ~ </div> : <div> 아아 </div>});
+  return (
+    // <>
+    //   <TopNavigationBar />
+    //   <TopNavigationBarPlaceholder />
+    //   <PhotoGrid>
+    //     {Array.from({ length: 12 }, (_, index) => (
+    //       <PhotoBlock key={index}>{index + 1}</PhotoBlock>
+    //     ))}
+    //   </PhotoGrid>
+    // </>
+    <PhotoDetail />
+  );
+
   // return (
   //   <>
   //     <TopNavigationBar />
   //     <TopNavigationBarPlaceholder />
   //     <PhotoGrid>
-  //       {Array.from({ length: 12 }, (_, index) => (
-  //         <PhotoBlock key={index}>{index + 1}</PhotoBlock>
-  //       ))}
+  //       {Array.from({ length: 12 }, (_, index) => {
+  //         if (index === 0) {
+  //           return <ImageBlock key={index} />;
+  //         }
+  //         if (index === 1) {
+  //           return <ImageBlock1 key={index} />;
+  //         }
+  //         return <PhotoBlock key={index}></PhotoBlock>;
+  //       })}
   //     </PhotoGrid>
   //   </>
-  //   // <PhotoDetail />
   // );
-  return (
-    <>
-      <TopNavigationBar />
-      <TopNavigationBarPlaceholder />
-      <PhotoGrid>
-        {Array.from({ length: 12 }, (_, index) => {
-          if (index === 0) {
-            return <ImageBlock key={index} />;
-          }
-          return <PhotoBlock key={index}></PhotoBlock>;
-        })}
-      </PhotoGrid>
-    </>
-  );
 };
 
 export default History;
@@ -93,7 +97,7 @@ const PhotoDetail = () => {
         <img src="/history/blueCheckHistory.svg" alt="bluecheck" width={34} />
         <VerifiedBadge isOrigin={true}>원본 인증됨</VerifiedBadge>
       </HistoryVerification>
-      <HistoryImage src="/history/verifyEx2.png" />
+      <HistoryImage src="/history/IMG_5517.JPG" />
       <div
         style={{
           display: "flex",
@@ -148,7 +152,7 @@ const VerifiedBadge = styled.div`
 `;
 
 const HistoryImage = styled.img`
-  width: 320px;
+  width: 250px;
   margin-top: 20px;
 `;
 
@@ -205,7 +209,14 @@ const DownloadButton = styled.button`
 const ImageBlock = styled.div`
   width: 100px;
   height: 100px;
-  background-image: url("/history/verifyEx2.png");
+  background-image: url("/history/Hugging_Face_Emoji_2028ce8b-c213-4d45-94aa-21e1a0842b4d_large.webp");
+  background-size: cover;
+  background-position: center;
+`;
+const ImageBlock1 = styled.div`
+  width: 100px;
+  height: 100px;
+  background-image: url("/history/IMG_5517.JPG");
   background-size: cover;
   background-position: center;
 `;
