@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import { createContext, useState } from "react";
 import Web3 from "web3";
 import styled from "styled-components";
+import { RecoilRoot } from "recoil";
 
 export const AppContext = createContext();
 
@@ -25,11 +26,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Container>
-          <AppContext.Provider value={{ account, setAccount, web3 }}>
-            <Providers>{children}</Providers>
-          </AppContext.Provider>
-        </Container>
+        <RecoilRoot>
+          <Container>
+            <AppContext.Provider value={{ account, setAccount, web3 }}>
+              <Providers>{children}</Providers>
+            </AppContext.Provider>
+          </Container>
+        </RecoilRoot>
       </body>
     </html>
   );

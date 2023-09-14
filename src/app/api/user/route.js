@@ -1,7 +1,7 @@
 // express 역할
-import { prisma } from '@/app/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
-import { useSearchParams } from 'next/navigation';
+import { prisma } from "@/app/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+import { useSearchParams } from "next/navigation";
 
 export const GET = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ export const GET = async (req, res) => {
       return json(
         {
           ok: false,
-          error: 'Not exist token.',
+          error: "Not exist token.",
         },
         {
           status: 400,

@@ -6,6 +6,10 @@ import { Presets, Client } from "userop";
 import { AppContext } from "../layout";
 import c_abi from "../c_abi.json";
 import TopNavigationBar from "../components/TopNavigationBar";
+import styled from "styled-components";
+import { useRef } from "react";
+import { useRecoilState } from "recoil";
+import { registerStepState } from "../states";
 
 const c_add = "0x525C1af37185CC58c68D5a57dC38eA7900c378e3";
 
@@ -28,6 +32,7 @@ const Register = () => {
   const [signer, setSigner] = useState();
   const [builder, setBuilder] = useState();
   const [hash, setHash] = useState();
+  const [registerStep, setRegisterStep] = useRecoilState(registerStepState);
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -92,6 +97,15 @@ const Register = () => {
     setResult(0);
   };
 
+  const inputRef = useRef();
+
+  const handleClick = () => {
+    // input 엘리먼트가 클릭되었을 때 input 버튼을 클릭하기 위해 click() 메서드를 사용
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
   const onChangeImageFile = async (e) => {
     if (!e.target.files) return;
 
@@ -151,6 +165,7 @@ const Register = () => {
         };
       }
     };
+    setRegisterStep(2);
   };
 
   useEffect(() => {
@@ -175,38 +190,48 @@ const Register = () => {
       <TopNavigationBar />
       <div className="flex justify-center items-center h-screen">
         {!imageFile ? (
-          <form className="flex flex-col">
-            <label
-              className="px-8 py-2 border rounded-xl bg-red-200"
-              htmlFor="imageFile"
-            >
-              {imageFile ? imageFile.name : "Choose image"}
-            </label>
+          <StyledUploadImageButton onClick={handleClick}>
+            <img src="/register/LGcamera.svg" alt="camera" />
             <input
-              className="hidden"
-              id="imageFile"
+              ref={inputRef}
+              accept="image/*"
               type="file"
               onChange={onChangeImageFile}
+              style={{ display: "none" }}
             />
-          </form>
+          </StyledUploadImageButton>
         ) : (
-          <div className="flex flex-col">
-            {selectedImage && <img src={selectedImage} alt="Uploaded" />}
-            <div>
-              <button
-                className="px-8 py-2 border rounded-xl bg-red-200"
-                onClick={register}
+          <div
+            className="flex flex-col"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {selectedImage && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                원본 등록
-              </button>
-              {print != 0 ? <div>{print}</div> : <></>}
-            </div>
-            <button
-              className="px-8 py-2 border rounded-xl bg-red-200"
-              onClick={del}
+                <UploadedImage src={selectedImage} alt="Uploaded" />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "312px",
+                marginTop: "20px",
+              }}
             >
-              이미지 제거
-            </button>
+              <RemoveButton onClick={register}>원본 등록</RemoveButton>
+              {print != 0 ? <div>{print}</div> : <></>}
+              <RegisterButton onClick={del}>이미지 제거</RegisterButton>
+            </div>
           </div>
         )}
       </div>
@@ -214,3 +239,56 @@ const Register = () => {
   );
 };
 export default Register;
+
+const StyledUploadImageButton = styled.div`
+  width: 250px;
+  height: 250px;
+  background-color: #6b6b6b;
+  color: white;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 15.6;
+`;
+
+const UploadedImage = styled.img`
+  width: 80%;
+`;
+
+const RemoveButton = styled.button`
+  width: 148px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: white;
+  color: #2b9bda;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: 20px;
+  font-weight: 400;
+  border: 4px solid #2b9bda;
+  box-sizing: border-box;
+`;
+
+const RegisterButton = styled.button`
+  width: 148px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: #2b9bda;
+  color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  font-size: 20px;
+  font-weight: 400;
+`;

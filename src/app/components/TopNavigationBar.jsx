@@ -2,19 +2,22 @@
 
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { registerStepState } from "../states";
+import { useRecoilState } from "recoil";
 
 const TopNavigationBar = () => {
+  const [registerStep, setRegisterStep] = useRecoilState(registerStepState);
   return (
     <>
       <Container>
-        <NavigationItem>등록하기</NavigationItem>
-        <NavigationItem>검증하기</NavigationItem>
-        <NavigationItem>히스토리</NavigationItem>
+        <NavigationItem selected={registerStep == 1}>등록하기</NavigationItem>
+        <NavigationItem selected={registerStep == 2}>검증하기</NavigationItem>
+        <NavigationItem selected={registerStep == 3}>히스토리</NavigationItem>
       </Container>
       <StatusLine>
-        <StatusCircle></StatusCircle>
-        <StatusCircle></StatusCircle>
-        <StatusCircle></StatusCircle>
+        <StatusCircle selected={registerStep == 1}></StatusCircle>
+        <StatusCircle selected={registerStep == 2}></StatusCircle>
+        <StatusCircle selected={registerStep == 3}></StatusCircle>
       </StatusLine>
     </>
   );
@@ -45,8 +48,8 @@ const NavigationItem = styled.div`
   height: 25px;
   border-radius: 23px;
 
-  background-color: #2b9bda;
-  color: white;
+  background-color: ${(props) => (props.selected ? "#2b9bda" : "white")};
+  color: ${(props) => (props.selected ? "white" : "#2b9bda")};
 
   display: flex;
   justify-content: center;
@@ -77,5 +80,5 @@ const StatusCircle = styled.div`
   height: 30px;
   border-radius: 50%;
   border: 4px solid #2b9bda;
-  background-color: white;
+  background-color: ${(props) => (props.selected ? "#F9DB53" : "white")};
 `;

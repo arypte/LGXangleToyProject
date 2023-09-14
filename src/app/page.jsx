@@ -31,7 +31,7 @@ export default function Home() {
             display: "flex",
             width: "250px",
             justifyContent: "space-between",
-            marginTop: "20px",
+            marginTop: "30px",
           }}
         >
           <img
