@@ -8,18 +8,18 @@ export const POST = async (req) => {
 
     console.log(userId, imgurl, result);
 
-    // const res = await prisma.history.create({
-    //   data: {
-    //     userId,
-    //     imgurl,
-    //     result,
-    //   },
-    // });
+    const res = await prisma.history.create({
+      data: {
+        userId,
+        imgurl,
+        result,
+      },
+    });
 
-    // return NextResponse.json({
-    //   ok: true,
-    //   res,
-    // });
+    return NextResponse.json({
+      ok: true,
+      res,
+    });
   } catch (error) {
     console.error(error);
   }
