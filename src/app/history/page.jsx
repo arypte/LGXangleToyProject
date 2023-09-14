@@ -19,19 +19,19 @@ const History = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/history/${account.id}`
+        `${process.env.NEXT_PUBLIC_BACK_URL}/api/history?signeky=${account.id}`
       );
 
       setData(response.data);
       setIsLoading(false);
-      console.log(response.data);
+      console.log("data :", response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    console.log(account);
+    console.log("account : ", account);
     get_history_data();
   }, []);
 

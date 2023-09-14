@@ -1,12 +1,12 @@
 //app/components/SignInButton.tsx
 
-"use client";
-import { signIn, signOut, useSession } from "next-auth/react";
-import React, { useContext, useEffect } from "react";
-import { AppContext } from "../layout";
-import { useRouter } from "next/navigation";
-import styled from "styled-components";
-import axios from "axios";
+'use client';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import React, { useContext, useEffect } from 'react';
+import { AppContext } from '../layout';
+import { useRouter } from 'next/navigation';
+import styled from 'styled-components';
+import axios from 'axios';
 
 function SignInButton() {
   const { data: session } = useSession();
@@ -22,14 +22,14 @@ function SignInButton() {
         {
           auth: suser.id,
           pvk: newAccount.privateKey,
-          nickname: "test",
-          login_type: "test",
+          nickname: 'test',
+          login_type: 'test',
         }
       );
 
       setAccount({
         name: suser.name,
-        id: suser.id,
+        id: res.data.user.id,
         pvk: res.data.user.address,
       });
     } catch (error) {
@@ -39,29 +39,34 @@ function SignInButton() {
 
   const go_Register = () => {
     make_user(session.user);
-    router.push("/register");
+    router.push('/register');
   };
 
   const go_Check = () => {
     make_user(session.user);
-    router.push("/check");
+    router.push('/check');
+  };
+
+  const go_History = () => {
+    make_user(session.user);
+    router.push('/history');
   };
 
   if (session && session.user) {
     // console.log(session.user.id);
 
     return (
-      <div className="flex flex-col" style={{ marginTop: "20px" }}>
+      <div className="flex flex-col" style={{ marginTop: '20px' }}>
         <BlackShortButton
           onClick={() => signOut()}
-          style={{ marginBottom: "10px" }}
+          style={{ marginBottom: '10px' }}
         >
           {session.user.name}님 Log Out
         </BlackShortButton>
 
         <BlackShortButton
           onClick={go_Register}
-          style={{ marginBottom: "10px" }}
+          style={{ marginBottom: '10px' }}
         >
           원본 등록
         </BlackShortButton>
@@ -71,6 +76,12 @@ function SignInButton() {
         >
           원본 검증
         </BlackShortButton>
+        <BlackShortButton
+          className="px-8 py-2 border rounded-xl bg-red-200"
+          onClick={go_History}
+        >
+          히스 토리
+        </BlackShortButton>
       </div>
     );
     // router.push("/register");
@@ -78,10 +89,10 @@ function SignInButton() {
 
   return (
     <LoginButton
-      style={{ marginTop: "50px" }}
+      style={{ marginTop: '50px' }}
       onClick={async () => {
         await signIn();
-        router.push("/register");
+        router.push('/register');
       }}
     >
       Social LogIn

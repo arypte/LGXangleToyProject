@@ -29,6 +29,6 @@ model History{
   updatedAt       DateTime  @updatedAt
   userId          Int
   user            User      @relation(fields: [userId], references: [id])
-  imgurl          Int
+  imgurl          String
   result          Boolean
 }

@@ -1,20 +1,21 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, useContext } from "react";
-import { ethers } from "ethers";
-import { AppContext } from "../layout";
-import c_abi from "../c_abi.json";
-import styled from "styled-components";
-import { useRef } from "react";
-import TopNavigationBar from "../components/TopNavigationBar";
-import { useRouter } from "next/navigation";
-import { TopNavigationBarPlaceholder } from "../placeholder";
-import { registerStepState } from "../states";
-import { useRecoilState } from "recoil";
+import React, { useState, useEffect, useContext } from 'react';
+import { ethers } from 'ethers';
+import { AppContext } from '../layout';
+import c_abi from '../c_abi.json';
+import styled from 'styled-components';
+import { useRef } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar';
+import { useRouter } from 'next/navigation';
+import { TopNavigationBarPlaceholder } from '../placeholder';
+import { registerStepState } from '../states';
+import { useRecoilState } from 'recoil';
+import axios from 'axios';
 
-const c_add = "0x525C1af37185CC58c68D5a57dC38eA7900c378e3";
+const c_add = '0x525C1af37185CC58c68D5a57dC38eA7900c378e3';
 
-const Register = () => {
+const Check = () => {
   const { account, setAccount, web3 } = useContext(AppContext);
   const c_a2 = new web3.eth.Contract(c_abi, c_add);
   const [result, setResult] = useState(0);
@@ -28,14 +29,40 @@ const Register = () => {
 
   const handleClick = async () => {
     const bool = await c_a2.methods.check_hash(hash, idx).call();
-    if (bool === true) setResult(1);
-    else setResult(2);
-    setRegisterStep(3);
+
+    // console.log(`${process.env.NEXT_PUBLIC_BACK_URL}/api/history/`);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACK_URL}/api/history/`,
+        {
+          userId: account.id,
+          result: bool,
+          imgurl: selectedImage,
+        }
+      );
+
+      if (bool === true) setResult(1);
+      else setResult(2);
+      setRegisterStep(3);
+    } catch (error) {
+      console.log(error);
+    }
+
+    // const res = await axios.post(
+    //   `${process.env.NEXT_PUBLIC_BACK_URL}/api/user`,
+    //   {
+    //     auth: suser.id,
+    //     pvk: newAccount.privateKey,
+    //     nickname: 'test',
+    //     login_type: 'test',
+    //   }
+    // );
   };
 
   const getImagePixelColor = (imageData) => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
     canvas.width = imageData.width;
     canvas.height = imageData.height;
@@ -67,7 +94,7 @@ const Register = () => {
   const onChangeImageFile = (e) => {
     if (!e.target.files) return;
 
-    const crypto = require("crypto");
+    const crypto = require('crypto');
     const file = e.target.files[0];
 
     const reader = new FileReader();
@@ -77,7 +104,7 @@ const Register = () => {
       if (event.target && event.target.result) {
         const fileData = event.target.result;
         const fileBuffer = Buffer.from(fileData);
-        const ab = crypto.createHash("sha512").update(fileBuffer).digest("hex");
+        const ab = crypto.createHash('sha512').update(fileBuffer).digest('hex');
 
         const img = new Image();
         img.src = event.target.result;
@@ -89,7 +116,7 @@ const Register = () => {
           console.log(temp);
         };
 
-        console.log("hash : ", ab);
+        console.log('hash : ', ab);
         setHash(ab);
         setImageFile(file);
       }
@@ -101,7 +128,8 @@ const Register = () => {
 
   useEffect(() => {
     setRegisterStep(1);
-    console.log("처음 레지스터");
+    console.log('account : ', account);
+    console.log('처음 레지스터');
   }, []);
   return (
     <>
@@ -118,24 +146,24 @@ const Register = () => {
               accept="image/*"
               type="file"
               onChange={onChangeImageFile}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
           </StyledUploadImageButton>
         ) : registerStep === 2 ? (
           <div
             className="flex flex-col"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
             {selectedImage && (
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <UploadedImage src={selectedImage} alt="Uploaded" />
@@ -143,10 +171,10 @@ const Register = () => {
             )}
             <div
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "312px",
-                marginTop: "20px",
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '312px',
+                marginTop: '20px',
               }}
             >
               <VerifyButton onClick={handleClick}>원본 검증</VerifyButton>
@@ -158,17 +186,17 @@ const Register = () => {
             <div
               className="flex flex-col"
               style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 {result != 0 &&
@@ -181,7 +209,7 @@ const Register = () => {
               </div>
               <CompleteButton
                 onClick={() => {
-                  router.push("/");
+                  router.push('/');
                 }}
               >
                 확인
@@ -193,7 +221,7 @@ const Register = () => {
     </>
   );
 };
-export default Register;
+export default Check;
 
 const StyledUploadImageButton = styled.div`
   width: 250px;
@@ -269,7 +297,7 @@ const VerifiedBadge = styled.div`
   align-items: center;
   text-align: center;
 
-  background-color: ${(props) => (props.isOrigin ? "#2B9BDA" : "#DA792D")};
+  background-color: ${(props) => (props.isOrigin ? '#2B9BDA' : '#DA792D')};
   color: white;
 `;
 
