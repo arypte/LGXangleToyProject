@@ -79,10 +79,6 @@ export const GET = async (req) => {
         where: {
           id: id,
         },
-        select: {
-          imgurl: true,
-          result: true,
-        },
       });
     }
 
