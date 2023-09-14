@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, useContext } from "react";
-import { ethers } from "ethers";
-import { AppContext } from "../layout";
-import c_abi from "../c_abi.json";
-import axios from "axios";
-import styled from "styled-components";
-import TopNavigationBar from "../components/TopNavigationBar";
-import { TopNavigationBarPlaceholder } from "../placeholder";
+import React, { useState, useEffect, useContext } from 'react';
+import { ethers } from 'ethers';
+import { AppContext } from '../layout';
+import c_abi from '../c_abi.json';
+import axios from 'axios';
+import styled from 'styled-components';
+import TopNavigationBar from '../components/TopNavigationBar';
+import { TopNavigationBarPlaceholder } from '../placeholder';
 
 const History = () => {
   const { account, setAccount, web3 } = useContext(AppContext);
@@ -19,19 +19,19 @@ const History = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/history/${account.id}`
+        `${process.env.NEXT_PUBLIC_BACK_URL}/api/history?signeky=${account.id}`
       );
 
       setData(response.data);
       setIsLoading(false);
-      console.log(response.data);
+      console.log('data :', response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    console.log(account);
+    console.log('account : ', account);
     get_history_data();
   }, []);
 
@@ -96,10 +96,10 @@ const PhotoDetail = () => {
       <HistoryImage src="/history/verifyEx2.png" />
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "312px",
-          marginTop: "20px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '312px',
+          marginTop: '20px',
         }}
       >
         <ListButton>목록</ListButton>
@@ -143,7 +143,7 @@ const VerifiedBadge = styled.div`
 
   margin-left: 10px;
 
-  background-color: ${(props) => (props.isOrigin ? "#2B9BDA" : "#DA792D")};
+  background-color: ${(props) => (props.isOrigin ? '#2B9BDA' : '#DA792D')};
   color: white;
 `;
 
@@ -205,7 +205,7 @@ const DownloadButton = styled.button`
 const ImageBlock = styled.div`
   width: 100px;
   height: 100px;
-  background-image: url("/history/verifyEx2.png");
+  background-image: url('/history/verifyEx2.png');
   background-size: cover;
   background-position: center;
 `;
