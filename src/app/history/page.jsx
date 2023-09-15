@@ -45,8 +45,8 @@ const History = () => {
       <TopNavigationBarPlaceholder />
       <PhotoGrid>
         {data?.map((v, i) => (
-          <Link href={`/detail/${v.id}`} key={i} className="w-[100px] h-[100px] ">
-            <img src = "https://github.com/arypte/SWF2023-NEIGHBOR/blob/main/Images/Haechi%20NFT/King.png?raw=true" />
+          <Link href={`/detail/${v.id}`} key={i} className="w-[100px] h-[100px] flex justify-center">
+            <div classname="text-[40px]"> {v.imgurl} </div>
           </Link>
       ))}
       </PhotoGrid>

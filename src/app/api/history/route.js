@@ -7,7 +7,7 @@ export const POST = async (req) => {
   try {
     const { userId, imgurl, result } = await req.json();
 
-    console.log(userId, imgurl, result);
+    // console.log(userId, imgurl, result);
 
     const res = await prisma.history.create({
       data: {

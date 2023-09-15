@@ -33,15 +33,6 @@ const Check = () => {
     // console.log(`${process.env.NEXT_PUBLIC_BACK_URL}/api/history/`);
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACK_URL}/api/history/`,
-        {
-          userId: account.id,
-          result: bool,
-          imgurl: selectedImage,
-        }
-      );
-
       if (bool === true) setResult(1);
       else setResult(2);
       setRegisterStep(3);

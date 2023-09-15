@@ -46,10 +46,10 @@ return isLoading ? (
     <TopNavigationBarPlaceholder />
     <HistoryTime>검증 시간 : {data.createdAt}</HistoryTime>
     <HistoryVerification>
-      <img src="/history/blueCheckHistory.svg" alt="bluecheck" width={34} />
-      <VerifiedBadge isOrigin={data.bool}>{ data.bool == true ? '원본 인증됨' : '원본 인증X' } </VerifiedBadge>
+      <div src="/history/blueCheckHistory.svg" alt="bluecheck" width={34} />
+      <VerifiedBadge isOrigin={data.bool}>{ data.bool == true ? '원본 이미지' : '원본 이미지' } </VerifiedBadge>
     </HistoryVerification>
-    <HistoryImage src={data.imgurl} />
+    <div className='mx-auto w-[100px] text-[30px]' >{data.imgurl}</div>
     <div
       style={{
         display: "flex",
@@ -106,10 +106,6 @@ const VerifiedBadge = styled.div`
   color: white;
 `;
 
-const HistoryImage = styled.img`
-  width: 250px;
-  margin-top: 20px;
-`;
 
 const ListButton = styled.button`
   width: 148px;

@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import { registerStepState } from "../states";
 import { useRouter } from "next/navigation";
 import { TopNavigationBarPlaceholder } from "../placeholder";
+import axios from "axios";
 
 const c_add = "0x525C1af37185CC58c68D5a57dC38eA7900c378e3";
 
@@ -107,10 +108,25 @@ const Register = () => {
       console.log("Waiting for transaction...");
       const ev = await res.wait();
       console.log(`Transaction hash: ${ev?.transactionHash ?? null}`);
-      const count = await c_a2.methods.get_count().call();
+      let count = await c_a2.methods.get_count().call();
+      count = Number( count ) ;
       setPrint(Number(count));
       downloadImage(selectedImage, "modified_image.png");
       setRegisterStep(3);
+
+      console.log( 'db record' ) ;
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACK_URL}/api/history/`,
+        {
+          userId: account.id,
+          result: true ,
+          imgurl: String(count) ,
+        }
+      );
+
+      console.log( 'db complete' ) ;
+
     } catch (error) {
       console.log(error);
     }
