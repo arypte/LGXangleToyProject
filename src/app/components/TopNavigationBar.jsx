@@ -4,48 +4,25 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { registerStepState } from "../states";
 import { useRecoilState } from "recoil";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-
-const TopNavigationBar = () => {
+const TopNavigationBar = (router) => {
   const [registerStep, setRegisterStep] = useRecoilState(registerStepState);
-  const pathname = usePathname();
-  const router = useRouter();
+  console.log(router.pathname);
   return (
     <>
       <Container>
-        <NavigationItem
-          selected={pathname == "/register"}
-          onClick={() => {
-            router.push("/register");
-          }}
-        >
+        <NavigationItem selected={router.pathname == "/register"}>
           등록하기
         </NavigationItem>
-        <NavigationItem
-          selected={pathname == "/check"}
-          onClick={() => {
-            router.push("/check");
-          }}
-        >
+        <NavigationItem selected={router.pathname == "/check"}>
           검증하기
         </NavigationItem>
-        <NavigationItem
-          selected={pathname == "/history"}
-          onClick={() => {
-            router.push("/history");
-          }}
-        >
-          히스토리
-        </NavigationItem>
+        <NavigationItem selected={false}>히스토리</NavigationItem>
       </Container>
-      {pathname !== "/history" && (
-        <StatusLine>
-          <StatusCircle selected={registerStep == 1}></StatusCircle>
-          <StatusCircle selected={registerStep == 2}></StatusCircle>
-          <StatusCircle selected={registerStep == 3}></StatusCircle>
-        </StatusLine>
-      )}
+      <StatusLine>
+        <StatusCircle selected={registerStep == 1}></StatusCircle>
+        <StatusCircle selected={registerStep == 2}></StatusCircle>
+        <StatusCircle selected={registerStep == 3}></StatusCircle>
+      </StatusLine>
     </>
   );
 };
