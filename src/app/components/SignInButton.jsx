@@ -71,14 +71,14 @@ function SignInButton() {
           원본 등록
         </BlackShortButton>
         <BlackShortButton
-          className="px-8 py-2 border rounded-xl bg-red-200"
+
           onClick={go_Check}
         >
           원본 검증
         </BlackShortButton>
         <BlackShortButton
-          className="px-8 py-2 border rounded-xl bg-red-200"
           onClick={go_History}
+          style={{marginTop:"10px"}}
         >
           히스 토리
         </BlackShortButton>
