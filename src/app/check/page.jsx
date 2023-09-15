@@ -123,14 +123,16 @@ const Check = () => {
     };
 
     setSelectedImage(URL.createObjectURL(file));
+    console.log( 'url : ' , URL.createObjectURL(file) ) ;
     setRegisterStep(2);
   };
 
   useEffect(() => {
+    if( account ){
     setRegisterStep(1);
     console.log('account : ', account);
-    console.log('처음 레지스터');
-  }, []);
+  }
+  }, [account]);
   return (
     <>
       <TopNavigationBar router={router} />
