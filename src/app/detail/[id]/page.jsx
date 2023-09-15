@@ -44,7 +44,7 @@ return isLoading ? (
     <TopNavigationBar />
     
     <TopNavigationBarPlaceholder />
-    <HistoryTime>검증 시간 : {data.createdAt}</HistoryTime>
+    <HistoryTime>등록 시간 : {data.createdAt}</HistoryTime>
     <HistoryVerification>
       <div src="/history/blueCheckHistory.svg" alt="bluecheck" width={34} />
       <VerifiedBadge isOrigin={data.bool}>{ data.bool == true ? '원본 이미지' : '원본 이미지' } </VerifiedBadge>
