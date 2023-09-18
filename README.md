@@ -1,1 +1,1 @@
-## LGLGxXangle 산학협력프로젝트
+## LGxXangle 산학협력프로젝트
